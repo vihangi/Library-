@@ -54,15 +54,14 @@ def display_menu():
     """
     counter = True
     print("")
-    print("""Reading List 1.0 - by Vihangi Vagal
-                      4 books loaded from {}
-                      Menu:
+    print(""" Menu:
                       R - List required books
                       C - List completed books
                       A - Add new book
                       M - Mark a book as completed
                       Q - Quit
-                      """.format(FILENAME))
+
+                      """)
     menu_choice = input(">>>")
     menu_choice = menu_choice.lower()
     while(counter == True):
@@ -76,15 +75,14 @@ def display_menu():
 
         if (counter== True):
             print("Invalid menu choice")
-            print("""Reading List 1.0 - by Vihangi Vagal
-                                   4 books loaded from {}
-                                   Menu:
-                                   R - List required books
-                                   C - List completed books
-                                   A - Add new book
-                                   M - Mark a book as completed
-                                   Q - Quit
-                                   """.format(FILENAME))
+            print(""" Menu:
+                                  R - List required books
+                                  C - List completed books
+                                  A - Add new book
+                                  M - Mark a book as completed
+                                  Q - Quit
+
+                                  """)
             menu_choice = input(">>>")
             menu_choice = menu_choice.lower()
 
@@ -105,31 +103,64 @@ def listing_books(list_book):
     else:
         print("No books")
 
+def marking_books(required_books,completed_books):
+
+    print("Enter the number of a book to mark as completed")
+    count = 0
+    try:
+        marked_book_number = int(input(">>>"))
+        for i in range(len(required_books)):
+            if (marked_book_number== int(required_books[i][4])):
+
+                print("update")
+
+                count+=1
+
+        for i in range(len(completed_books)):
+            if (marked_book_number == int(completed_books[i][4])):
+                print("Book already completed")
+                count+=1
+
+        if count == 0:
+            print("Invalid book number")
+            marking_books(required_books,completed_books)
+
+
+    except ValueError:
+        if marked_book_number== 0:
+            pass
+        else:
+            print("Invalid input; enter a valid number")
+            marking_books(required_books,completed_books)
+
 def main():
     read_file()
 
     #printing the menu
-
+    print("""Reading List 1.0 - by Vihangi Vagal
+    4 books loaded from {}""". format(FILENAME))
     menu_choice =display_menu()
-    if menu_choice == "r":
-        print("Required books")
-        listing_books(required_books)
-        menu_choice = display_menu()
-    elif menu_choice == "c":
-        print("Completed books")
-        listing_books(completed_books)
-        menu_choice = display_menu()
-    elif menu_choice == "a":
-        print("Add books")
-        menu_choice = display_menu()
-    elif menu_choice == "m":
-        print("Required books")
-        listing_books(required_books)
-        menu_choice = display_menu()
-    elif menu_choice == "q":
-        print("quit")
-    else:
-        print("invalid")
+    while(menu_choice != "q"):
+        if menu_choice == "r":
+            print("Required books:")
+            listing_books(required_books)
+            menu_choice = display_menu()
+        elif menu_choice == "c":
+            print("Completed books:")
+            listing_books(completed_books)
+            menu_choice = display_menu()
+        elif menu_choice == "a":
+            print("Add books:")
+            menu_choice = display_menu()
+        elif menu_choice == "m":
+            print("Required books:")
+            listing_books(required_books)
+            marking_books(required_books,completed_books)
+            menu_choice = display_menu()
+        elif menu_choice == "q":
+            print("quit")
+        else:
+            print("invalid")
 
 
 main()
