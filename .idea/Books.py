@@ -93,13 +93,13 @@ def listing_books(list_book):
     count =0
     list_book.sort(key=itemgetter(4, 2))
     for i in range (len(list_book)):
-        print("{0}.{2:10} {1:>20} {2:20}by {3:20} {4:>20} pages".format(list_book[i][4],list_book[i][0],"",list_book[i][1], list_book[i][2]))
+        print("{0}.{2:10s} {1:10s} {2:10s}by {3:20s} {4:>20s} pages".format(list_book[i][4],list_book[i][0],"",list_book[i][1], list_book[i][2]))
         total_pages = total_pages + int(list_book[i][2])
         count +=1
     if count==1 :
-        print("{:<10}Total pages for {} book : {}".format("", count, total_pages))
+        print("{:<10s}Total pages for {} book : {}".format("", count, total_pages))
     elif count>1 :
-        print("{:<10}Total pages for {} books : {}".format("", count, total_pages))
+        print("{:<10s}Total pages for {} books : {}".format("", count, total_pages))
     else:
         print("No books")
 
@@ -110,16 +110,18 @@ def marking_books(required_books,completed_books):
     try:
         marked_book_number = int(input(">>>"))
         for i in range(len(required_books)):
-            if (marked_book_number== int(required_books[i][4])):
-
-                print("update")
-
+            if (marked_book_number == int(required_books[i][4])):
+                completed_books.append(required_books[i])
+                required_books.pop(i)
+                print("{} by {} marked as completed".format(completed_books[i][0],completed_books[i][1]))
                 count+=1
+                break
 
-        for i in range(len(completed_books)):
-            if (marked_book_number == int(completed_books[i][4])):
-                print("Book already completed")
-                count+=1
+        if count == 0 :
+            for i in range(len(completed_books)):
+                if (marked_book_number == int(completed_books[i][4])):
+                    print("Book already completed")
+                    count+=1
 
         if count == 0:
             print("Invalid book number")
