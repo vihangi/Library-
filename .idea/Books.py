@@ -36,57 +36,87 @@ def read_file():
     for index, data in enumerate(file_pointer.readlines()):
         data = data.strip()
         datum = data.split(",")
+        index_value = str(index)
+        #print(index_value)
         #print(index, datum)
-
+        datum.append(index_value)
         if datum[3] == "r":
             required_books.append(datum)
-        if datum[3] == "c":
-           completed_books.append(datum)
 
+        if datum[3] == "c":
+            completed_books.append(datum)
     file_pointer.close()
 
-def display_menu(menu_choice):
+def display_menu():
     """
     The display_menu function is used to display the menu and checks whether the entered menu choice is valid
-    :param menu_choice: stores the menu_choice entered by the user
     :return: returns the menu choice of the user
     """
-    menu_choice=menu_choice.lower
-    while not (menu_choice== "r" or menu_choice=="c" or menu_choice== "a" or menu_choice== "m" or menu_choice== "q"):
-        if menu_choice == "":
+    counter = True
+
+    print("""Reading List 1.0 - by Vihangi Vagal
+                      4 books loaded from {}
+                      Menu:
+                      R - List required books
+                      C - List completed books
+                      A - Add new book
+                      M - Mark a book as completed
+                      Q - Quit
+                      """.format(FILENAME))
+    menu_choice = input(">>>")
+    menu_choice = menu_choice.lower()
+    while(counter == True):
+
+
+        if (menu_choice == "r" or menu_choice == "c" or menu_choice == "a" or menu_choice == "m" or menu_choice == "q"):
+            return menu_choice
+            counter = False
+            break
+
+
+        if (counter== True):
             print("Invalid menu choice")
             print("""Reading List 1.0 - by Vihangi Vagal
-                   4 books loaded from {}
-                   Menu:
-                   R - List required books
-                   C - List completed books
-                   A - Add new book
-                   M - Mark a book as completed
-                   Q - Quit
-                   """.format(FILENAME))
+                                   4 books loaded from {}
+                                   Menu:
+                                   R - List required books
+                                   C - List completed books
+                                   A - Add new book
+                                   M - Mark a book as completed
+                                   Q - Quit
+                                   """.format(FILENAME))
             menu_choice = input(">>>")
             menu_choice = menu_choice.lower()
-            continue
-        print("Invalid menu choice")
-        print("""Reading List 1.0 - by Vihangi Vagal
-        4 books loaded from {}
-        Menu:
-        R - List required books
-        C - List completed books
-        A - Add new book
-        M - Mark a book as completed
-        Q - Quit
-        """.format(FILENAME))
-        menu_choice = input(">>>")
-        menu_choice = menu_choice.lower()
-    return menu_choice
 
+
+
+def listing_books(list_book):
+
+    list_book.sort(key=itemgetter(4, 2))
+
+    print(list_book[1][4])
 
 def main():
     read_file()
-    menu_choice =""
+
     #printing the menu
-    menu_choice =display_menu(menu_choice)
+
+    menu_choice =display_menu()
+    if menu_choice == "r":
+        print("required books")
+        listing_books(required_books)
+    elif menu_choice == "c":
+        print("completed books")
+        print(completed_books)
+
+    elif menu_choice == "a":
+        print("add books")
+    elif menu_choice == "m":
+        print("mark books")
+    elif menu_choice == "q":
+        print("quit")
+    else:
+        print("invalid")
 
 
 main()
