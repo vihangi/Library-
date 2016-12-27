@@ -89,10 +89,11 @@ Q - Quit """)
 
 
 
-def listing_books(list_book):
+def listing_books(list_book,menu_choice):
     """
     This function is used to sort and list all the books in the list . It aligns all the data in the list in a table format.
     :param list_book: This is used to store the list which needs to be displayed
+    :param menu_choice: stores menu choice
     :return: null
     """
     total_pages=0
@@ -112,51 +113,61 @@ def listing_books(list_book):
             print("Total pages for {} books : {}".format(count, total_pages))
 
     else:
-        print("No books")
+        if menu_choice == "m":
+            print("No required books")
+            pass
+        else:
+            print("No books")
 
 
 def marking_books(required_books,completed_books):
     """
-    This function asks the user to enter a valid book number from the required list which it can mark as complete. It
+     This function asks the user to enter a valid book number from the required list which it can mark as complete. It
     checks whether the input is correct and it also appends the complete_books list and removes that book from the
     required_books list.
     :param required_books: This stores the required list of books
     :param completed_books: This stores the completed list of books
-    :return:null
-    """
 
-    print("Enter the number of a book to mark as completed")
-    count = 0
-    while(True):
-        if len(required_books)==0:
-            break
-        try:
-            marked_book_number = int(input(">>>"))
-            for i in range(len(required_books)):
-                #checks whether the input is in the list of required_books
-                if (marked_book_number == int(required_books[i][4])):
-                    print("{} by {} marked as completed".format(required_books[i][0], required_books[i][1]))
-                    required_books[i][3] = "c"
-                    completed_books.append(required_books[i])
-                    required_books.pop(i)
-                    count+=1
-                    break
-            if count>0 :
+    :return:
+    """
+    if (len(required_books)>0):
+        print("Required books:")
+        print("Enter the number of a book to mark as completed")
+        count = 0
+        while(True):
+            if len(required_books)==0:
                 break
-            #checks whether the input is in the list of completed_books
-            if count == 0 :
-                for i in range(len(completed_books)):
-                    if (marked_book_number == int(completed_books[i][4])):
-                        print("That book is already completed")
+            try:
+                marked_book_number = int(input(">>>"))
+                for i in range(len(required_books)):
+                    #checks whether the input is in the list of required_books
+                    if (marked_book_number == int(required_books[i][4])):
+                        print("{} by {} marked as completed".format(required_books[i][0], required_books[i][1]))
+                        required_books[i][3] = "c"
+                        completed_books.append(required_books[i])
+                        required_books.pop(i)
                         count+=1
                         break
-                break
 
-            if count == 0:
-                print("Invalid book number")
+                if count > 0 :
+                    break
+                #checks whether the input is in the list of completed_books
+                if count == 0 :
+                    for i in range(len(completed_books)):
+                        if (marked_book_number == int(completed_books[i][4])):
+                            print("That book is already completed")
+                            count+=1
+                            break
+                    break
 
-        except ValueError:
-            print("Invalid input; enter a valid number")
+                if count == 0:
+                    print("Invalid book number")
+
+            except ValueError:
+                print("Invalid input; enter a valid number")
+
+    else:
+        pass
 
 
 def adding_books(index_value,required_books):
@@ -232,6 +243,7 @@ def write_file():
             else:
                 outFile.write("\n")
     outFile.close()
+    print("{} books saved to {} \nHave a nice day :)".format(len(list_books), FILENAME))
 
 
 
@@ -250,13 +262,13 @@ def main():
         #list of required books
         if menu_choice == "r":
             print("Required books:")
-            listing_books(required_books)
+            listing_books(required_books,menu_choice)
             menu_choice = display_menu()
 
         #list of completed books
         elif menu_choice == "c":
             print("Completed books:")
-            listing_books(completed_books)
+            listing_books(completed_books,menu_choice)
             menu_choice = display_menu()
 
         #to add a book
@@ -266,15 +278,17 @@ def main():
 
         #to mark a book as complete
         elif menu_choice == "m":
-            print("Required books:")
-            listing_books(required_books)
+
+            listing_books(required_books,menu_choice)
+
             marking_books(required_books,completed_books)
             menu_choice = display_menu()
         else:
             print("invalid")
     #when the user decides to quit
     if menu_choice == "q":
-        print("{} books saved to {} \nHave a nice day :)".format(int(index_value)+1, FILENAME))
+        write_file()
+
 
 main()
 
