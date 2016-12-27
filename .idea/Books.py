@@ -32,12 +32,13 @@ Reading List 1.0 - by Yok Yen
 def read_file():
     global required_books
     global completed_books
+    global index_value
     file_pointer= open(FILENAME, "r")
     for index, data in enumerate(file_pointer.readlines()):
         data = data.strip()
         datum = data.split(",")
         index_value = str(index)
-        #print(index_value)
+
         #print(index, datum)
         datum.append(index_value)
         if datum[3] == "r":
@@ -46,6 +47,7 @@ def read_file():
         if datum[3] == "c":
             completed_books.append(datum)
     file_pointer.close()
+    return index_value
 
 def display_menu():
     """
@@ -93,13 +95,13 @@ def listing_books(list_book):
     count =0
     list_book.sort(key=itemgetter(4, 2))
     for i in range (len(list_book)):
-        print("{0}.{2:10s} {1:10s} {2:10s}by {3:20s} {4:>20s} pages".format(list_book[i][4],list_book[i][0],"",list_book[i][1], list_book[i][2]))
+        print("{0}.{2:10} {1:10} {2:10}by {3:20} {4:>20} pages".format(list_book[i][4],list_book[i][0],"",list_book[i][1], list_book[i][2]))
         total_pages = total_pages + int(list_book[i][2])
         count +=1
     if count==1 :
-        print("{:<10s}Total pages for {} book : {}".format("", count, total_pages))
+        print("{:<10}Total pages for {} book : {}".format("", count, total_pages))
     elif count>1 :
-        print("{:<10s}Total pages for {} books : {}".format("", count, total_pages))
+        print("{:<10}Total pages for {} books : {}".format("", count, total_pages))
     else:
         print("No books")
 
@@ -135,8 +137,45 @@ def marking_books(required_books,completed_books):
             print("Invalid input; enter a valid number")
             marking_books(required_books,completed_books)
 
+def adding_books(index_value,required_books):
+
+    data =[]
+    title=input("Title:")
+    while not title.strip():
+        print("Cannot be blank")
+        title = input("Title:")
+    data.append(title)
+    author = input("Author:")
+    while not author.strip():
+        print("Cannot be blank")
+        author = input("Author:")
+    data.append(author)
+    while(True):
+        try:
+            pages = int(input("Pages:"))
+            if pages < 0 :
+                print("Number must be >= 0")
+                continue
+
+            else:
+
+                break
+        except ValueError:
+            print("Invalid input; enter a valid number")
+    value = int(pages)
+    data.append(pages)
+    value = int(index_value)
+    value = value+ 1
+    index_value = str(value)
+    data.append("r")
+    data.append(index_value)
+    required_books.append(data)
+
+
+
+
 def main():
-    read_file()
+    index_value_returned=read_file()
 
     #printing the menu
     print("""Reading List 1.0 - by Vihangi Vagal
@@ -153,6 +192,7 @@ def main():
             menu_choice = display_menu()
         elif menu_choice == "a":
             print("Add books:")
+            adding_books(index_value_returned,required_books)
             menu_choice = display_menu()
         elif menu_choice == "m":
             print("Required books:")
