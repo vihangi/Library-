@@ -53,7 +53,7 @@ def display_menu():
     :return: returns the menu choice of the user
     """
     counter = True
-
+    print("")
     print("""Reading List 1.0 - by Vihangi Vagal
                       4 books loaded from {}
                       Menu:
@@ -91,10 +91,19 @@ def display_menu():
 
 
 def listing_books(list_book):
-
+    total_pages=0
+    count =0
     list_book.sort(key=itemgetter(4, 2))
-
-    print(list_book[1][4])
+    for i in range (len(list_book)):
+        print("{0}.{2:10} {1:>20} {2:20}by {3:20} {4:>20} pages".format(list_book[i][4],list_book[i][0],"",list_book[i][1], list_book[i][2]))
+        total_pages = total_pages + int(list_book[i][2])
+        count +=1
+    if count==1 :
+        print("{:<10}Total pages for {} book : {}".format("", count, total_pages))
+    elif count>1 :
+        print("{:<10}Total pages for {} books : {}".format("", count, total_pages))
+    else:
+        print("No books")
 
 def main():
     read_file()
@@ -103,16 +112,20 @@ def main():
 
     menu_choice =display_menu()
     if menu_choice == "r":
-        print("required books")
+        print("Required books")
         listing_books(required_books)
+        menu_choice = display_menu()
     elif menu_choice == "c":
-        print("completed books")
-        print(completed_books)
-
+        print("Completed books")
+        listing_books(completed_books)
+        menu_choice = display_menu()
     elif menu_choice == "a":
-        print("add books")
+        print("Add books")
+        menu_choice = display_menu()
     elif menu_choice == "m":
-        print("mark books")
+        print("Required books")
+        listing_books(required_books)
+        menu_choice = display_menu()
     elif menu_choice == "q":
         print("quit")
     else:
