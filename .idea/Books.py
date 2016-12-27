@@ -23,31 +23,30 @@ required_books=[]
 add_books=[]
 completed_books =[]
 marked_books=[]
-def print_header():
-    print("""
-Reading List 1.0 - by Yok Yen
-{} books loaded from books.csv
-    """)
+
 
 def read_file():
     global required_books
     global completed_books
     global index_value
+    datum = []
+    required = "r"
+    completed = "c"
     file_pointer= open(FILENAME, "r")
     for index, data in enumerate(file_pointer.readlines()):
         data = data.strip()
         datum = data.split(",")
         index_value = str(index)
-
-        #print(index, datum)
         datum.append(index_value)
-        if datum[3] == "r":
+        print(datum)
+
+        if datum[3] == required:
             required_books.append(datum)
 
-        if datum[3] == "c":
+        if datum[3] == completed:
             completed_books.append(datum)
     file_pointer.close()
-    return index_value
+
 
 def display_menu():
     """
@@ -95,7 +94,7 @@ def listing_books(list_book):
     count =0
     list_book.sort(key=itemgetter(4, 2))
     for i in range (len(list_book)):
-        print("{0}.{2:10} {1:10} {2:10}by {3:20} {4:>20} pages".format(list_book[i][4],list_book[i][0],"",list_book[i][1], list_book[i][2]))
+        print("{0}.{2:>10} {1:>10} {2:>10}by {3:20} {4:>20} pages".format(list_book[i][4],list_book[i][0],"",list_book[i][1], list_book[i][2]))
         total_pages = total_pages + int(list_book[i][2])
         count +=1
     if count==1 :
@@ -113,6 +112,7 @@ def marking_books(required_books,completed_books):
         marked_book_number = int(input(">>>"))
         for i in range(len(required_books)):
             if (marked_book_number == int(required_books[i][4])):
+                required_books[i][3] = "c"
                 completed_books.append(required_books[i])
                 required_books.pop(i)
                 print("{} by {} marked as completed".format(completed_books[i][0],completed_books[i][1]))
@@ -162,8 +162,8 @@ def adding_books(index_value,required_books):
                 break
         except ValueError:
             print("Invalid input; enter a valid number")
-    value = int(pages)
-    data.append(pages)
+    value = str(pages)
+    data.append(value)
     value = int(index_value)
     value = value+ 1
     index_value = str(value)
@@ -171,11 +171,34 @@ def adding_books(index_value,required_books):
     data.append(index_value)
     required_books.append(data)
 
+def write_file():
+    list_books=[]
+    dataValue = ""
+    for i in range(len(required_books)):
+        list_books.append(required_books[i])
+    for i in range(len(completed_books)):
+        list_books.append(completed_books[i])
+    list_books.sort(key=itemgetter(4, 2))
+    print(list_books)
+    outFile = open(FILENAME, "w")
+
+    for i in range(len(list_books)):
+        data = list_books[i][:4]
+
+        for j in range(4) :
+            #dataValue = str(data[j:j+1])
+            dataValue = data[j]
+            outFile.write(dataValue)
+            if j<3:
+                outFile.write(",")
+            else:
+                outFile.write("\n")
+    outFile.close()
 
 
 
 def main():
-    index_value_returned=read_file()
+    read_file()
 
     #printing the menu
     print("""Reading List 1.0 - by Vihangi Vagal
@@ -192,18 +215,19 @@ def main():
             menu_choice = display_menu()
         elif menu_choice == "a":
             print("Add books:")
-            adding_books(index_value_returned,required_books)
+            adding_books(index_value,required_books)
             menu_choice = display_menu()
         elif menu_choice == "m":
             print("Required books:")
             listing_books(required_books)
             marking_books(required_books,completed_books)
             menu_choice = display_menu()
-        elif menu_choice == "q":
-            print("quit")
+
         else:
             print("invalid")
-
+    if menu_choice == "q":
+        print("quit")
+        write_file()
 
 main()
 
